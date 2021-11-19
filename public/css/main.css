@@ -1,0 +1,18 @@
+*{
+    box-sizing: border-box;
+    font-size: 16px;
+}
+.classic-btn-red{
+    background-color: #FA5F55	;
+    font-size:1.3em;
+    padding: 0.5em 0.8em;
+    border: 0;
+    color: rgba(0,0,0,0.7);
+    border-radius: 0.3em;
+}
+
+.classic-btn-red:hover{
+    background-color: #D22B2B	;
+    color: whitesmoke;
+    cursor: pointer;
+}
