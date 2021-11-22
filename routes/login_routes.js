@@ -1,7 +1,10 @@
 
 const express=require("express")
 const env=require("../env")
+const customer=require("../database/Customer")
 const router=express.Router()
+
+
 
 router.get("/login",(req,res)=>{
     console.log(req.session)
@@ -15,6 +18,13 @@ router.get("/login/getLoginDetails",(req,res)=>{
     res.send({loggedIn:isLoggedIn})
 })
 
+router.post("/loginUser",(req,res)=>{
+    const username=req.body.username
+    const password=req.body.password
+
+
+})
+
 router.get("/register",(req,res)=>{
     if(!req.secure.hasOwnProperty("loggedIn")||!req.session.loggedIn){
         res.sendFile(env.root_dir+"/templates/register.html")
@@ -22,9 +32,17 @@ router.get("/register",(req,res)=>{
     }
 })
 
-router.post("/registerCustomer",(req,res)=>{
+router.post("/registerCustomer",async (req, res) => {
 
-    res.send({working:"true"})
+    if (req.body && req.body.hasOwnProperty("username") && req.body.hasOwnProperty("password")) {
+
+        const result=await customer.createNewCustomer(req.body.username, req.body.password)
+        console.log("This line"+result)
+        res.send(result)
+
+    } else {
+        throw new Error("Incomplete details given")
+    }
 
 
 })
