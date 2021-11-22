@@ -8,22 +8,21 @@ class Login{
         conn=database
     }
 
-    static loginVerification(username,password){
+    static loginVerification(username,password,callback){
         let query=`SELECT * FROM ${env.database.LOGIN_TABLE} WHERE username = ?`
         conn.query(query,username,(err,result)=>{
-            console.log(result)
-        })
-        bcrypt.hash(password,1,(err,hash)=>{
-            let query=`INSERT INTO ${env.database.LOGIN_TABLE} (username,password,type) VALUES(?,?,"customer")`
-            console.log(query)
-            conn.query(query,[username,hash],(err,result)=>{
-                if (err)throw err;
-                console.log(result)
-                return true
+
+            bcrypt.compare(password,result[0].password,(err,res)=>{
+                if(res){
+                    callback(true,result[0])
+                }else{
+                    callback(false)
+                }
             })
         })
+
     }
 
 
 }
-module.exports=Customer
+module.exports=Login

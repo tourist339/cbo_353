@@ -1,7 +1,8 @@
 
 const express=require("express")
 const env=require("../env")
-const customer=require("../database/Customer")
+const Customer=require("../database/Customer")
+const Login=require("../database/Login")
 const router=express.Router()
 
 
@@ -15,12 +16,28 @@ router.get("/login",(req,res)=>{
 
 router.get("/login/getLoginDetails",(req,res)=>{
     const isLoggedIn=req.session.loggedIn
-    res.send({loggedIn:isLoggedIn})
+    if(isLoggedIn) {
+        res.send({loggedIn: true,username:req.session.username})
+    }else{
+        res.send({loggedIn: false})
+
+    }
 })
 
 router.post("/loginUser",(req,res)=>{
     const username=req.body.username
     const password=req.body.password
+
+    Login.loginVerification(username,password,(result,data)=>{
+        if(!result){
+            res.send({"result":false})
+        }else{
+            req.session.loggedIn=true
+            req.session.username=data.username
+            req.session.type=data.type
+            res.send({"result":true})
+        }
+    })
 
 
 })
@@ -36,9 +53,10 @@ router.post("/registerCustomer",async (req, res) => {
 
     if (req.body && req.body.hasOwnProperty("username") && req.body.hasOwnProperty("password")) {
 
-        const result=await customer.createNewCustomer(req.body.username, req.body.password)
-        console.log("This line"+result)
-        res.send(result)
+        Customer.createNewCustomer(req.body.username, req.body.password,(resultString)=>{
+            res.send(resultString)
+        })
+
 
     } else {
         throw new Error("Incomplete details given")

@@ -9,8 +9,15 @@ window.addEventListener("load",()=>{
                 'Content-Type': 'application/json' ,//this must be set to a json type
             },
             body:JSON.stringify({username:"US",password:"LOAD"})
-        }).then(response=>response.text())
-            .then(data=>console.log(data))
+        }).then(response=>response.json())
+            .then(data=>{
+                if(data.result==true){
+                    window.location.href="/"
+                }else{
+                    document.getElementById("login-err").innerText="Wrong Username/Password"
+                }
+
+            })
             .catch(err=>console.error(err))
     })
 
