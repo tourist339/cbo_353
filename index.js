@@ -1,6 +1,7 @@
 const app=require("./server")
 const mysql=require("mysql")
 const database=require("./DatabaseHandler")
+const env=require("./env")
 const conn=mysql.createConnection({
     user:"root",
     password:"nestle333",
@@ -15,9 +16,7 @@ conn.connect(async err => {
 
 })
 const PORT=8080
-app.get("/",(req,res)=>{
-    res.send("Hey whats up")
-})
+
 
 app.listen(PORT,()=>{
     console.log("Listening on port "+PORT)

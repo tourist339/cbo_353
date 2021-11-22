@@ -3,9 +3,7 @@ const bcrypt=require("bcrypt")
 const env=require("../env")
 class Customer{
 
-    constructor() {
-        this.id="Fsd"
-    }
+
      static init(database){
          conn=database
      }
@@ -23,6 +21,10 @@ class Customer{
                  callback("Succesfull")
              })
          })
+     }
+
+     static updateCustomerData(){
+
      }
 
 
