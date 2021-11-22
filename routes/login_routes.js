@@ -6,12 +6,14 @@ const Login=require("../database/Login")
 const router=express.Router()
 
 
-
 router.get("/login",(req,res)=>{
-    console.log(req.session)
-    req.session.loggedIn=true;
 
-    res.sendFile(env.root_dir+"/templates/login.html")
+    if(req.session.loggedIn){
+        res.redirect("/")
+    }else{
+        res.sendFile(env.root_dir+"/templates/login.html")
+    }
+
 })
 
 router.get("/login/getLoginDetails",(req,res)=>{
@@ -51,6 +53,7 @@ router.get("/register",(req,res)=>{
 
 router.post("/registerCustomer",async (req, res) => {
 
+    console.log(req.body)
     if (req.body && req.body.hasOwnProperty("username") && req.body.hasOwnProperty("password")) {
 
         Customer.createNewCustomer(req.body.username, req.body.password,(resultString)=>{

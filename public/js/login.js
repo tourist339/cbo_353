@@ -8,7 +8,7 @@ window.addEventListener("load",()=>{
             headers: {
                 'Content-Type': 'application/json' ,//this must be set to a json type
             },
-            body:JSON.stringify({username:"US",password:"LOAD"})
+            body:JSON.stringify({username:document.getElementById("login-username").value,password:document.getElementById("login-password").value})
         }).then(response=>response.json())
             .then(data=>{
                 if(data.result==true){

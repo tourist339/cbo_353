@@ -8,7 +8,22 @@ global={
         static LOGIN_TABLE="login_credentials"
 
     },
-    root_dir:__dirname
+    root_dir:__dirname,
+    checkLoggedIn:(req)=>{
+        if (req.session.hasOwnProperty("loggedIn")&&req.session.loggedIn){
+            return true
+        }else{
+            return false
+        }
+    },
+    isAdmin:(req)=>{
+        if(global.checkLoggedIn(req)){
+            if(req.session.type=="admin"){
+                return true
+            }
+        }
+        return false
+    }
 
 }
 
