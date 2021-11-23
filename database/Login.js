@@ -30,13 +30,27 @@ class Login{
     static getUsernameFromId(login_id,callback){
         let query=`SELECT username FROM ${env.database.LOGIN_TABLE} WHERE id = ?`
         conn.query(query,[login_id],(err,result)=>{
-            console.log(result)
             if(err||result.length==0){
                 callback(false,"No such Login Id")
                 return
             }
 
             callback(true,result[0].username)
+
+
+
+        })
+    }
+
+    static getIdFromUsername(username,callback){
+        let query=`SELECT id FROM ${env.database.LOGIN_TABLE} WHERE username = ?`
+        conn.query(query,[username],(err,result)=>{
+            if(err||result.length==0){
+                callback(false,"No such Login Id")
+                return
+            }
+
+            callback(true,result[0].id)
 
 
 

@@ -28,12 +28,16 @@ class Database{
     static getAddictionNameFromId(addiction_id,callback){
         let query=`SELECT name FROM ${env.database.ADDICTION_TABLE} WHERE id = ?`
         conn.query(query,[addiction_id],(err,result)=>{
-            if(err){
-                throw err
+            if(err||result.length==0){
+                throw new Error("No such addiction id")
             }
-            callback(result)
+            callback(result[0].name)
 
         })
+    }
+
+    static addDoctorToPatient(patientId,doctorId,callback){
+
     }
 
 

@@ -6,6 +6,9 @@ body,html{
     height: 100%;
     margin: 0;
 }
+.hidden{
+    display: none !important;
+}
 .classic-btn{
     background-color: #FA5F55	;
     font-size:1.3em;

@@ -56,51 +56,91 @@ router.get("/getSingleStaff",(req,res)=>{
 
         Staff.getSingleStaff(req.query.id,(result,data)=>{
 
-            if(!result){
+
                 res.send({result:result,data:data})
 
-            }else{
-                res.send({result:result,data:data[0]})
 
-            }
         })
 
 })
 
+router.get("/getSingleStaffFromUsername",(req,res)=>{
+
+    if(req.query.hasOwnProperty("username")&&req.query.username!=""){
+
+        const username=req.query.username
+        Login.getIdFromUsername(username,(result,id)=>{
+            if(!result){
+                res.send({result:false,data:id})
+                return
+            }
+
+            Staff.getSingleStaffFromLoginId(id,(result,staff)=>{
+                res.send({result:result,data:staff})
+
+            })
+        })
+    }else{
+        res.send({result:false,data:"Enter valid username"})
+    }
+
+
+
+})
+
 router.get("/getAllCustomers",(req,res)=>{
-    Customer.getAllCustomers((data)=>{
-        if(!data){
-            res.send(["Error "+data])
+    Customer.getAllCustomers((allcustomers)=>{
+        if(!allcustomers){
+            res.send(["Error "+allcustomers])
+        }
+        let updatedCustomers=0
+        let updateCustomer=(singleCustomer,username,addiction_type,doctor)=>{
+            singleCustomer.username = username
+            singleCustomer.addiction_type = addiction_type
+            singleCustomer.doctor=doctor
+            delete singleCustomer["staff_id"]
+            updatedCustomers++
+            if(updatedCustomers==allcustomers.length){
+                res.send(allcustomers)
+
+            }
+        }
+        for (let i = 0; i < allcustomers.length; i++) {
+            let singleCustomer=allcustomers[i]
+            Database.getAddictionNameFromId(singleCustomer.addiction_type,(addiction_name)=> {
+                Login.getUsernameFromId(singleCustomer.login_id, (result, username) => {
+
+                    if (singleCustomer.staff_id) {
+                        Staff.getSingleStaff(singleCustomer.staff_id, (result,staff) => {
+                            if(result) {
+                                updateCustomer(singleCustomer, username, addiction_name, staff)
+                            }else{
+                                updateCustomer(singleCustomer, username, addiction_name, null)
+                            }
+
+                        })
+                    }else{
+                        updateCustomer(singleCustomer,username,addiction_name,null)
+                    }
+
+                })
+            })
         }
 
-        data.forEach((row,index)=>{
-            Database.getAddictionNameFromId(row.addiction_type,(addiction_name)=>{
-            Login.getUsernameFromId(row.login_id,(result,username)=>{
 
-                row.username=username
-                row.addiction_type=addiction_name[0].name
-                if(index==data.length-1){
-                    res.send(data)
-                }
-            })
-
-        })});
 
     })
 })
 
 
 router.get("/getAllStaff",(req,res)=>{
-    Staff.getAllStaff((data)=>{
-        if(!data){
-            res.send(["Error "+data])
+
+    Staff.getAllStaff((allstaff)=>{
+
+        if(!allstaff){
+            res.send(["Error "+allstaff])
         }
-        data.forEach((row,index)=>{Database.getAddictionNameFromId(row.addiction_speciality,(addiction_name)=>{
-            row.addiction_speciality=addiction_name[0].name
-            if(index==data.length-1){
-                res.send(data)
-            }
-        })});
+       res.send(allstaff)
 
     })
 })
@@ -132,6 +172,22 @@ router.post("/registerStaff",(req,res)=>{
 
 
     })
+})
+
+router.post("/addDoctorToPatient",(req,res)=>{
+    if(req.body.hasOwnProperty("doctorId")&&req.body.hasOwnProperty("patientId")&&req.body.patientId!=""&&req.body.doctorId!=""){
+        const patientId=req.body.patientId
+        const doctorId=req.body.doctorId
+        Customer.addDoctorToCustomer(patientId,doctorId,()=>{
+            Staff.addCustomerToDoctor(patientId,doctorId,()=>{
+                res.send({result:true,data:"Added"})
+            })
+        })
+
+    }else{
+        res.send({result:true,data:"PatientId or DoctorId not valid"})
+
+    }
 })
 
 module.exports=router

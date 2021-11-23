@@ -39,3 +39,13 @@
     padding: 0.3em 0.4em;
 
 }
+#all-customers-table td[colspan="6"]{
+
+    padding: 0;
+
+}
+.assign-doctor-box{
+    background-color: lightgray;
+    padding: 1em;
+    width: 100%;
+}

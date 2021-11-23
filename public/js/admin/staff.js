@@ -8,6 +8,7 @@ const getAllStaff=()=>{
             let staffTable=document.getElementById("all-staff-table")
             staffTable.innerHTML=`
                <tr>
+               <th>Username</th>
                 <th>Name</th>
                 <th>Speciality</th>
                 <th>Link</th>
@@ -17,7 +18,10 @@ const getAllStaff=()=>{
             console.log(data)
             data.forEach(staff=>{
                 let singleRow=document.createElement("tr")
-                singleRow.innerHTML=`<td>${staff.firstname+" "+staff.lastname}</td>
+                singleRow.innerHTML=`
+                <td>${staff.username}</td>
+
+<td>${staff.firstname+" "+staff.lastname}</td>
                 <td>${staff.addiction_speciality}</td>
                 <td><a class="classic-btn" href="/admin/staff?id=${staff.id}">View</a></td>`
                 staffTable.appendChild(singleRow)

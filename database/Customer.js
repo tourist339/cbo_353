@@ -24,6 +24,8 @@ class Customer{
         })
     }
 
+
+
     static getAllCustomers(callback){
         let query=`SELECT * FROM ${env.database.CUSTOMER_TABLE}`
         conn.query(query,(err,result)=>{
@@ -35,6 +37,16 @@ class Customer{
     }
      static updateCustomerData(){
 
+     }
+
+     static addDoctorToCustomer(patientId,doctorId,callback){
+         let query=`UPDATE ${env.database.CUSTOMER_TABLE} SET staff_id = ? WHERE id = ?`
+         conn.query(query,[doctorId,patientId],(err,result)=>{
+             if(err){
+                 throw err
+             }
+             callback(result)
+         })
      }
 
 
