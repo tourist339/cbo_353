@@ -13,6 +13,16 @@ class Customer{
          database.createNewUser(username,password,"customer",callback)
      }
 
+    static createCustomerData(login_id,firstname,lastname,addiction_type,phone_num,callback){
+        let query=`INSERT INTO ${env.database.CUSTOMER_TABLE} (firstname,lastname,login_id,addiction_type,phone_num) VALUES(?,?,?,?,?)`
+        conn.query(query,[firstname,lastname,login_id,addiction_type,phone_num],(err,result)=>{
+            if (err){
+                callback(false,err.message)
+                return
+            }
+            callback(true,result)
+        })
+    }
      static updateCustomerData(){
 
      }

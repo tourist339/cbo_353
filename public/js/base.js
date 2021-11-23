@@ -11,11 +11,11 @@ const fillAddicitonsList=(element_id,callback)=>{
                 option.innerHTML=addiction.name
                 addictionSelect.appendChild(option)
                 if(index==data.length-1){
-                    callback()
+                    if(callback)callback()
                 }
             })
         })
-        .catch(err=>console.error(err))
+        .catch(err=>console.log(err))
 }
 
 export {fillAddicitonsList}

@@ -3,6 +3,7 @@ const express=require("express")
 const env=require("../env")
 const Customer=require("../database/Customer")
 const Login=require("../database/Login")
+const Staff = require("../database/Staff");
 const router=express.Router()
 
 
@@ -51,19 +52,38 @@ router.get("/register",(req,res)=>{
     }
 })
 
-router.post("/registerCustomer",async (req, res) => {
+router.post("/registerCustomer", (req, res) => {
 
-    console.log(req.body)
-    if (req.body && req.body.hasOwnProperty("username") && req.body.hasOwnProperty("password")) {
+    let allKeys=Object.keys(req.body);
+    for (let i = 0; i < allKeys.length; i++) {
+        if (req.body[allKeys[i]] == "") {
+            res.send({result: false, data: "Empty " + allKeys[i]})
+            break
+        }
+    }
 
-        Customer.createNewCustomer(req.body.username, req.body.password,(resultString)=>{
-            res.send(resultString)
+
+        Customer.createNewCustomer(req.body.username, req.body.password,(result,data)=>{
+            if(result){
+                const loginId=data.insertId
+                Customer.createCustomerData(loginId,req.body.first_name,req.body.last_name,req.body.addiction_kind,req.body.phone_num,(result,data)=>{
+                    if(!result){
+                        res.send({result:false,data:data})
+                        return
+                    }
+                    req.session.loggedIn=true
+                    req.session.username=data.username
+                    req.session.type=data.type
+                    res.send({result:true})
+
+
+                })
+            }else{
+                res.send({result: false, data: data})
+
+            }
         })
 
-
-    } else {
-        throw new Error("Incomplete details given")
-    }
 
 
 })

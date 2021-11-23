@@ -69,11 +69,13 @@ router.get("/getAllStaff",(req,res)=>{
 })
 
 router.post("/registerStaff",(req,res)=>{
-    Object.keys(req.body).forEach(key=>{
-        if (req.body[key]==""){
-            res.send({result:false,data:"Empty "+key})
+    let allKeys=Object.keys(req.body);
+    for (let i = 0; i < allKeys.length; i++) {
+        if (req.body[allKeys[i]] == "") {
+            res.send({result: false, data: "Empty " + allKeys[i]})
+            break
         }
-    })
+    }
 
     Staff.createNewStaff(req.body.username,req.body.password,(result,data)=>{
         if(!result){
