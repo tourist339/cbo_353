@@ -7,18 +7,18 @@ const Staff=require("../database/Staff")
 const Database=require("../database/Database")
 
 const router=express.Router()
-//
-router.use((req,res,next)=>{
-    if(env.checkLoggedIn(req)){
-        if(!req.session.type=="admin"){
-            res.send("Not logged in as admin")
-        }else{
-            next()
-        }
-    }else{
-        res.send("Not logged in")
-    }
-})
+
+// router.use((req,res,next)=>{
+//     if(env.checkLoggedIn(req)){
+//         if(!req.session.type=="admin"){
+//             res.send("Not logged in as admin")
+//         }else{
+//             next()
+//         }
+//     }else{
+//         res.send("Not logged in")
+//     }
+// })
 router.get("/",(req,res)=>{
     res.sendFile(env.root_dir+"/templates/admin/index.html")
 })
@@ -36,6 +36,21 @@ router.get("/staff",(req,res)=>{
         res.sendFile(env.root_dir + "/templates/admin/staff.html")
     }
 })
+
+router.get("/customer",(req,res)=>{
+    if(req.query.hasOwnProperty("id")){
+        Staff.getSingleStaff(req.query.id,(result,data)=>{
+            if(!result){
+                res.send(data)
+            }else{
+                res.sendFile(env.root_dir + "/templates/admin/singlestaff.html")
+            }
+        })
+    }else {
+        res.sendFile(env.root_dir + "/templates/admin/customer.html")
+    }
+})
+
 router.get("/getSingleStaff",(req,res)=>{
 
 
@@ -50,6 +65,28 @@ router.get("/getSingleStaff",(req,res)=>{
             }
         })
 
+})
+
+router.get("/getAllCustomers",(req,res)=>{
+    Customer.getAllCustomers((data)=>{
+        if(!data){
+            res.send(["Error "+data])
+        }
+
+        data.forEach((row,index)=>{
+            Database.getAddictionNameFromId(row.addiction_type,(addiction_name)=>{
+            Login.getUsernameFromId(row.login_id,(result,username)=>{
+
+                row.username=username
+                row.addiction_type=addiction_name[0].name
+                if(index==data.length-1){
+                    res.send(data)
+                }
+            })
+
+        })});
+
+    })
 })
 
 

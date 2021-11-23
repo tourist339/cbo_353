@@ -51,6 +51,12 @@ router.get("/register",(req,res)=>{
 
     }
 })
+router.get("/logout",(req,res)=>{
+    req.session.loggedIn=false
+    req.session.username=""
+    req.session.type=""
+    res.redirect("/")
+})
 
 router.post("/registerCustomer", (req, res) => {
 

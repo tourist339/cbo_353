@@ -23,6 +23,16 @@ class Customer{
             callback(true,result)
         })
     }
+
+    static getAllCustomers(callback){
+        let query=`SELECT * FROM ${env.database.CUSTOMER_TABLE}`
+        conn.query(query,(err,result)=>{
+            if(err){
+                throw err
+            }
+            callback(result)
+        })
+    }
      static updateCustomerData(){
 
      }
