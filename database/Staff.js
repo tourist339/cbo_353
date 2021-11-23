@@ -26,6 +26,26 @@ class Staff{
         })
     }
 
+    static getAllStaff(callback){
+        let query=`SELECT * FROM ${env.database.STAFF_TABLE}`
+        conn.query(query,(err,result)=>{
+            if(err){
+                throw err
+            }
+            callback(result)
+        })
+    }
+
+    static getSingleStaff(staff_id,callback){
+        let query=`SELECT * FROM ${env.database.STAFF_TABLE} WHERE id = ?`
+        conn.query(query,(err,result)=>{
+            if(err){
+                throw err
+            }
+            callback(result)
+        })
+    }
+
 
 }
 module.exports=Staff

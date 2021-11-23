@@ -1,11 +1,32 @@
 
-window.addEventListener("load",()=>{
-    let errField=document.getElementById("staff-add-err")
+const getAllStaff=()=>{
     fetch("/admin/getAllStaff",{
         method:"GET"
     }).then((response)=>response.json())
-        .then(data=>console.log(data))
+        .then(data=>{
+            let staffTable=document.getElementById("all-staff-table")
+            staffTable.innerHTML=`
+               <tr>
+                <th>Name</th>
+                <th>Speciality</th>
+                <th>Link</th>
+
+            </tr>
+            `
+            console.log(data)
+            data.forEach(staff=>{
+                let singleRow=document.createElement("tr")
+                singleRow.innerHTML=`<td>${staff.firstname+" "+staff.lastname}</td>
+                <td>${staff.addiction_speciality}</td>
+                <td><a class="classic-btn" href="/admin/staff?id=${staff.id}">View</a></td>`
+                staffTable.appendChild(singleRow)
+            })
+        })
         .catch(err=>console.error(err))
+}
+window.addEventListener("load",()=>{
+    let registerErrField=document.getElementById("staff-add-err")
+    getAllStaff()
 
     fetch("/getAllAddictions",{
         method:"GET"
@@ -29,7 +50,7 @@ window.addEventListener("load",()=>{
         let registerStaffForm=document.getElementById("register-staff-form")
 
         if(password.value!=confirmPassword.value){
-            errField.innerText="Passwords do not match"
+            registerErrField.innerText="Passwords do not match"
             return
         }
         let formData=new FormData(registerStaffForm)
@@ -44,7 +65,13 @@ window.addEventListener("load",()=>{
             },
             body:JSON.stringify(dataToSubmit)
         }).then((response)=>response.json())
-            .then(data=>console.log(data))
+            .then(data=>{
+                if(data.result==false){
+                    registerErrField.innerText=data.data
+                }else {
+                    getAllStaff()
+                }
+            })
             .catch(err=>console.error(err))
 
 

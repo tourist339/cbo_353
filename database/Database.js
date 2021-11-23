@@ -25,6 +25,16 @@ class Database{
 
     }
 
+    static getAddictionNameFromId(addiction_id,callback){
+        let query=`SELECT name FROM ${env.database.ADDICTION_TABLE} WHERE id = ?`
+        conn.query(query,[addiction_id],(err,result)=>{
+            if(err){
+                throw err
+            }
+            callback(result)
+        })
+    }
+
 
 }
 module.exports=Database

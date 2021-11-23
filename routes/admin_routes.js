@@ -4,6 +4,8 @@ const env=require("../env")
 const Customer=require("../database/Customer")
 const Login=require("../database/Login")
 const Staff=require("../database/Staff")
+const Database=require("../database/Database")
+
 const router=express.Router()
 //
 // router.use((req,res,next)=>{
@@ -26,7 +28,19 @@ router.get("/staff",(req,res)=>{
 })
 
 router.get("/getAllStaff",(req,res)=>{
-    res.send({font:"Fdsa"})
+    Staff.getAllStaff((data)=>{
+        if(!data){
+            res.send(["Error "+data])
+        }
+        data.forEach((row,index)=>{Database.getAddictionNameFromId(row.addiction_speciality,(addiction_name)=>{
+            row.addiction_speciality=addiction_name[0].name
+            if(index==data.length-1){
+                res.send(data)
+
+            }
+        })});
+
+    })
 })
 
 router.post("/registerStaff",(req,res)=>{
