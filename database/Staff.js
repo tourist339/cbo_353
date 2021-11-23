@@ -38,11 +38,13 @@ class Staff{
 
     static getSingleStaff(staff_id,callback){
         let query=`SELECT * FROM ${env.database.STAFF_TABLE} WHERE id = ?`
-        conn.query(query,(err,result)=>{
-            if(err){
-                throw err
+        conn.query(query,[staff_id],(err,result)=>{
+            if(err||result.length==0){
+                callback(false,"No staff exists in database with id "+staff_id)
+                return
             }
-            callback(result)
+            callback(true,result)
+
         })
     }
 

@@ -1,3 +1,4 @@
+import {fillAddicitonsList} from "../base.js";
 
 const getAllStaff=()=>{
     fetch("/admin/getAllStaff",{
@@ -28,20 +29,7 @@ window.addEventListener("load",()=>{
     let registerErrField=document.getElementById("staff-add-err")
     getAllStaff()
 
-    fetch("/getAllAddictions",{
-        method:"GET"
-    }).then((response)=>response.json())
-        .then(data=>{
-            let addictionSelect=document.getElementById("addiction-speciality")
-
-            data.forEach(addiction=>{
-                let option=document.createElement("option")
-                option.setAttribute("value",addiction.id)
-                option.innerHTML=addiction.name
-                addictionSelect.appendChild(option)
-            })
-        })
-        .catch(err=>console.error(err))
+   fillAddicitonsList("addiction-speciality")
 
 
     document.getElementById("submit-add-staff").addEventListener("click",()=>{

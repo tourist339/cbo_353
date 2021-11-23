@@ -8,24 +8,50 @@ const Database=require("../database/Database")
 
 const router=express.Router()
 //
-// router.use((req,res,next)=>{
-//     if(env.checkLoggedIn(req)){
-//         if(!req.session.type=="admin"){
-//             res.send("Not logged in as admin")
-//         }else{
-//             next()
-//         }
-//     }else{
-//         res.send("Not logged in")
-//     }
-// })
+router.use((req,res,next)=>{
+    if(env.checkLoggedIn(req)){
+        if(!req.session.type=="admin"){
+            res.send("Not logged in as admin")
+        }else{
+            next()
+        }
+    }else{
+        res.send("Not logged in")
+    }
+})
 router.get("/",(req,res)=>{
     res.sendFile(env.root_dir+"/templates/admin/index.html")
 })
 
 router.get("/staff",(req,res)=>{
-    res.sendFile(env.root_dir+"/templates/admin/staff.html")
+    if(req.query.hasOwnProperty("id")){
+        Staff.getSingleStaff(req.query.id,(result,data)=>{
+            if(!result){
+                res.send(data)
+            }else{
+                res.sendFile(env.root_dir + "/templates/admin/singlestaff.html")
+            }
+        })
+    }else {
+        res.sendFile(env.root_dir + "/templates/admin/staff.html")
+    }
 })
+router.get("/getSingleStaff",(req,res)=>{
+
+
+        Staff.getSingleStaff(req.query.id,(result,data)=>{
+
+            if(!result){
+                res.send({result:result,data:data})
+
+            }else{
+                res.send({result:result,data:data[0]})
+
+            }
+        })
+
+})
+
 
 router.get("/getAllStaff",(req,res)=>{
     Staff.getAllStaff((data)=>{
@@ -36,7 +62,6 @@ router.get("/getAllStaff",(req,res)=>{
             row.addiction_speciality=addiction_name[0].name
             if(index==data.length-1){
                 res.send(data)
-
             }
         })});
 

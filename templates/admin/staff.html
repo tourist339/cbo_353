@@ -5,7 +5,7 @@
     <title>Staff</title>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/admin/staff.css">
-    <script src="/js/admin/staff.js"></script>
+    <script  type="module"  src="/js/admin/staff.js"></script>
 
 </head>
 <body>
@@ -14,9 +14,9 @@
         <a class="classic-btn" href="/" >Logo</a>
     </div>
     <div class="auto-left">
-        <a class="classic-btn" href="admin/staff" id="general-info-schedule">Staff</a>
-        <a class="classic-btn" href="customers" id="general-info-reports">Customers</a>
-        <a class="classic-btn" href="/login" type="button">Logout</a>
+        <a class="classic-btn" href="/admin/staff" id="general-info-schedule">Staff</a>
+        <a class="classic-btn" href="/admin/customers" id="general-info-reports">Customers</a>
+        <a class="classic-btn" href="/logout" type="button">Logout</a>
     </div>
 </div>
 
@@ -55,6 +55,7 @@
         <button id="submit-add-staff" class="classic-btn auto-left">Add Staff</button>
     </div>
     <div id="all-staff">
+        <p class="large-text" style="margin: 0px;text-align: center">All Staff</p>
         <table id="all-staff-table">
             <tr>
                 <th>Name</th>
