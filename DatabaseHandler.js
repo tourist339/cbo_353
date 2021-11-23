@@ -1,6 +1,8 @@
 const Customer=require("./database/Customer")
 const Login=require("./database/Login")
 const Staff=require("./database/Staff")
+const Database=require("./database/Database")
+
 const env=require("./env")
 
 let conn
@@ -11,6 +13,8 @@ class DatabaseHandler{
         Customer.init(db)
         Login.init(db)
         Staff.init(db)
+        Database.init(db)
+
     }
 
     static getAllAddictions(callback){

@@ -38,7 +38,7 @@ app.get("/",(req,res)=>{
 app.get("/getAllAddictions",(req,res)=>{
     databaseHandler.getAllAddictions((result,data)=>{
         if(result){
-            console.log(data)
+            res.send(data)
         }
     })
 })

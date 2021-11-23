@@ -3,6 +3,7 @@ const express=require("express")
 const env=require("../env")
 const Customer=require("../database/Customer")
 const Login=require("../database/Login")
+const Staff=require("../database/Staff")
 const router=express.Router()
 //
 // router.use((req,res,next)=>{
@@ -29,7 +30,30 @@ router.get("/getAllStaff",(req,res)=>{
 })
 
 router.post("/registerStaff",(req,res)=>{
+    Object.keys(req.body).forEach(key=>{
+        if (req.body[key]==""){
+            res.send({result:false,data:"Empty "+key})
+        }
+    })
 
+    Staff.createNewStaff(req.body.username,req.body.password,(result,data)=>{
+        if(!result){
+            res.send({result:false,data:data})
+            return
+        }
+        const loginId=data.insertId
+        Staff.createStaffData(loginId,req.body.first_name,req.body.last_name,req.body.speciality,(result,data)=>{
+            if(!result){
+                res.send({result:false,data:data})
+                return
+            }
+
+            res.send({result:true,data:data})
+
+        })
+
+
+    })
 })
 
 module.exports=router

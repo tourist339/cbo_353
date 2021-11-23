@@ -25,24 +25,34 @@
         <form id="register-staff-form">
             <div class="label-input-box">
                 <p class="label medium-text">Username</p>
-                <input type="password" name="username" class="medium-text">
+                <input type="text" name="username" class="medium-text">
             </div>
             <div class="label-input-box">
                 <p class="label medium-text">First Name</p>
-                <input type="password" name="first_name" class="medium-text">
+                <input type="text" name="first_name" class="medium-text">
             </div>
             <div class="label-input-box">
                 <p class="label medium-text">Last Name</p>
-                <input type="password" name="last_name" class="medium-text">
+                <input type="text" name="last_name" class="medium-text">
+            </div>
+
+            <div class="label-input-box">
+                <p class="label medium-text">Password</p>
+                <input type="password" name="password" id="staff-password" class="medium-text">
+            </div>
+
+            <div class="label-input-box">
+                <p class="label medium-text">Confirm Password</p>
+                <input type="password" id="staff-confirm-password" class="medium-text">
             </div>
 
             <div class="label-input-box">
                 <p class="label medium-text">Addiction Speciality</p>
-                <input type="password" name="addiction_type" class="medium-text">
+                <select id="addiction-speciality"  name="speciality" class="medium-text"></select>
             </div>
         </form>
-
-        <button class="classic-btn auto-left">Add Staff</button>
+        <p class="para-text" id="staff-add-err"></p>
+        <button id="submit-add-staff" class="classic-btn auto-left">Add Staff</button>
     </div>
     <div id="all-staff">
 
