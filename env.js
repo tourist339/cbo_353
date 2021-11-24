@@ -4,7 +4,7 @@ global={
         static DATABASE_NAME="cbo_addiction"
         static CUSTOMER_TABLE="customer"
         static STAFF_TABLE="staff"
-        static ADDICTION_TABLE="addiction"
+        static ADDICTION_TABLE="addictions"
         static LOGIN_TABLE="login_credentials"
 
     },

@@ -6,6 +6,9 @@ body,html{
     height: 100%;
     margin: 0;
 }
+.hidden{
+    display: none !important;
+}
 .classic-btn{
     background-color: #FA5F55	;
     font-size:1.3em;
@@ -82,6 +85,7 @@ body,html{
 }
 
 .label-input-box{
+    margin-right: 1em;
 }
 
 .label-input-box .label{
@@ -96,4 +100,16 @@ body,html{
 #navigation-bar{
     width: 100%;
     padding: 0.5em 0;
+}
+
+.row-flex .label{
+    margin-right: 0.5em;
+}
+
+.underline{
+    width: fit-content;
+    padding-bottom: 0.2em;
+
+    padding-right: 1em;
+    border-bottom: 2px solid black;
 }

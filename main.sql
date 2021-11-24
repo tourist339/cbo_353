@@ -12,9 +12,16 @@ CREATE TABLE IF NOT EXISTS `customer` (
 `firstname` VARCHAR(255) NOT NULL,
 `lastname` VARCHAR(255) NOT NULL,
 `login_id` INT NOT NULL UNIQUE,
-`addiction_type` INT NULL,
-`addiction_description` VARCHAR(5000) ,
-`staff` INT
+`addiction_type` INT NOT NULL,
+`phone_num` VARCHAR(5000) ,
+`report_ids` VARCHAR(5000) ,
+`staff_id` INT
+);
+
+CREATE TABLE IF NOT EXISTS `report` (
+`id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+`customer_id` INT NOT NULL ,
+`data` VARCHAR(5000) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `staff` (
@@ -23,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `staff` (
 `lastname` VARCHAR(255) NOT NULL,
 `login_id` INT NOT NULL UNIQUE,
 `addiction_speciality` INT NULL,
-`customers` VARCHAR(5000));
+`customer_ids` VARCHAR(5000));
 
 CREATE TABLE IF NOT EXISTS addictions(
 	`id` INT AUTO_INCREMENT PRIMARY KEY,
