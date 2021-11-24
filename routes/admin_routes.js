@@ -190,4 +190,19 @@ router.post("/addDoctorToPatient",(req,res)=>{
     }
 })
 
+router.post("/deleteStaff",(req,res)=>{
+    const staffId=req.body.staffId
+    Staff.deleteStaff(staffId,()=>{
+        res.send({result:true,data:"Staff Deleted"})
+    })
+})
+
+router.post("/deleteCustomer",(req,res)=>{
+    const customerId=req.body.customerId
+    Customer.deleteCustomer(customerId,()=>{
+        res.send({result:true,data:"Customer Deleted"})
+
+    })
+})
+
 module.exports=router

@@ -1,7 +1,8 @@
 let conn
 const bcrypt=require("bcrypt")
 const env=require("../env")
-const database=require("./Database")
+const Database=require("./Database")
+const Login = require("../database/Login")
 class Customer{
 
 
@@ -10,7 +11,7 @@ class Customer{
      }
 
      static createNewCustomer(username,password,callback){
-         database.createNewUser(username,password,"customer",callback)
+         Database.createNewUser(username,password,"customer",callback)
      }
 
     static createCustomerData(login_id,firstname,lastname,addiction_type,phone_num,callback){
@@ -21,6 +22,16 @@ class Customer{
                 return
             }
             callback(true,result)
+        })
+    }
+
+    static getSingleCustomer(id,callback){
+        let query=`SELECT * FROM ${env.database.CUSTOMER_TABLE} WHERE id = ?`
+        conn.query(query,[id],(err,result)=>{
+            if(err){
+                throw err
+            }
+            callback(result[0])
         })
     }
 
@@ -48,6 +59,34 @@ class Customer{
              callback(result)
          })
      }
+
+     static removeDoctor(patientId,callback){
+         let query=`UPDATE ${env.database.CUSTOMER_TABLE} SET staff_id = "" WHERE id = ?`
+         conn.query(query,[patientId],(err,result)=>{
+             if(err){
+                 throw err
+             }
+             callback(result)
+         })
+     }
+    static deleteCustomer(id,callback){
+         this.getSingleCustomer(id,customer=>{
+             Database.removePatientFromDoctor(id,customer.staff_id,()=>{
+                 Login.deleteUser(customer.login_id,()=>{
+                     let query=`DELETE FROM ${env.database.CUSTOMER_TABLE} WHERE id = ?`
+                     conn.query(query,[id],(err,result)=>{
+                         if(err){
+                             throw err
+                         }
+                         callback(result)
+
+                     })
+                 })
+             })
+         })
+
+    }
+
 
 
 }

@@ -39,6 +39,42 @@ class Database{
     static addDoctorToPatient(patientId,doctorId,callback){
 
     }
+    static getCurrentPatientsIds(doctorId,callback){
+        let query=`SELECT customer_ids FROM ${env.database.STAFF_TABLE} WHERE id = ?`
+        conn.query(query,[doctorId],(err,result)=>{
+            if(err||result.length==0){
+                throw new Error("No Doctor with such id")
+            }
+            let customer_ids=result[0].customer_ids
+            callback(customer_ids)
+
+
+        })
+    }
+
+    static removePatientFromDoctor(patientId,doctorId,callback){
+        this.getCurrentPatientsIds(doctorId,customerIds=>{
+            if(customerIds==null||customerIds==""){
+                callback()
+            }else{
+                let customerIdsArray=customerIds.split(",")
+                const index = customerIdsArray.indexOf(patientId);
+                if (index > -1) {
+                    customerIdsArray.splice(index, 1);
+                }
+                let updatedCustomerIds=customerIdsArray.length==0?"":customerIdsArray.join(",")
+                let query=`UPDATE ${env.database.STAFF_TABLE} SET customer_ids = ? WHERE id = ?`
+                conn.query(query,[updatedCustomerIds,doctorId],(err,result)=>{
+                    if(err){
+                        throw err
+                    }
+                    callback(result)
+                })
+            }
+
+        })
+    }
+
 
 
 }

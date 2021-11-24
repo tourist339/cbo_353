@@ -57,6 +57,18 @@ class Login{
         })
     }
 
+    static deleteUser(id,callback){
+        let query=`DELETE FROM ${env.database.LOGIN_TABLE} WHERE id = ?`
+        conn.query(query,[id],(err,result)=>{
+            if(err){
+                throw err
+            }
+            callback(result)
+
+
+        })
+    }
+
 
 }
 module.exports=Login

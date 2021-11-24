@@ -1,8 +1,8 @@
 let conn
 const bcrypt=require("bcrypt")
 const env=require("../env")
-const database = require("./Database");
-const Database = require("../database/Database");
+const Database = require("./Database");
+const Customer = require("../database/Customer");
 const Login = require("../database/Login");
 class Staff{
 
@@ -13,7 +13,7 @@ class Staff{
     }
 
     static createNewStaff(username,password,callback){
-        database.createNewUser(username,password,"staff",callback)
+        Database.createNewUser(username,password,"staff",callback)
     }
 
 
@@ -45,7 +45,7 @@ class Staff{
             let updateStaff = (singleStaff, username, addiction_type, customers) => {
                 singleStaff.username = username
                 singleStaff.addiction_type = addiction_type
-                singleStaff.customers = "fd"
+                singleStaff.customers = customers
                 delete singleStaff["customer_ids"]
                 updatedStaff++
                 if (updatedStaff == allstaff.length) {
@@ -55,12 +55,17 @@ class Staff{
             allstaff.forEach((singlestaff, index) => {
                 Database.getAddictionNameFromId(singlestaff.addiction_speciality, (addiction_name) => {
                     Login.getUsernameFromId(singlestaff.login_id, (result, username) => {
-                        let customers=singlestaff.customers
-                        if(customers){
-                            updateStaff(singlestaff, username, addiction_name, customers)
+                        let customers=singlestaff.customer_ids
+
+                        console.log(singlestaff)
+                        if(customers&&customers!=""){
+                            this.getCustomersObjects(customers,customersToAdd=>{
+                                updateStaff(singlestaff, username, addiction_name, customersToAdd)
+
+                            })
 
                         }else {
-                            updateStaff(singlestaff, username, addiction_name, customers)
+                            updateStaff(singlestaff, username, addiction_name, [])
                         }
                     })
                 });
@@ -69,22 +74,41 @@ class Staff{
 
     }
 
+    static getCustomersObjects(customers,callback){
+        let customer_ids_array=customers.split(",")
+        let customersToAdd=[]
+        let updatedCustomers=0
+        for (let i = 0; i <customer_ids_array.length; i++) {
+            Customer.getSingleCustomer(customer_ids_array[i],(customer)=>{
+                customersToAdd.push(customer)
+                updatedCustomers++
+                if(updatedCustomers==customer_ids_array.length){
+                    callback(customersToAdd)
+
+                }
+            })
+        }
+    }
+
     static updateSingleStaff(singlestaff,callback){
         let updateStaff = (singleStaff, username, addiction_type, customers) => {
             singleStaff.username = username
             singleStaff.addiction_type = addiction_type
-            singleStaff.customers = "fd"
+            singleStaff.customers = customers
             delete singleStaff["customer_ids"]
             callback(true,singlestaff)
 
         }
         Database.getAddictionNameFromId(singlestaff.addiction_speciality, (addiction_name) => {
             Login.getUsernameFromId(singlestaff.login_id, (result, username) => {
-                let customers=singlestaff.customers
-                if(customers){
-                    updateStaff(singlestaff, username, addiction_name, customers)
+                let customers=singlestaff.customer_ids
+                if(customers&&customers!=""){
+                    this.getCustomersObjects(customers,customersToAdd=>{
+                        updateStaff(singlestaff, username, addiction_name, customersToAdd)
+
+                    })
                 }else {
-                    updateStaff(singlestaff, username, addiction_name, customers)
+                    updateStaff(singlestaff, username, addiction_name, [])
                 }
             })
         });
@@ -118,29 +142,48 @@ class Staff{
         })
     }
 
-    static getCurrentPatients(doctorId,callback){
-        let query=`SELECT customer_ids FROM ${env.database.STAFF_TABLE} WHERE id = ?`
-        conn.query(query,[doctorId],(err,result)=>{
-            if(err||result.length==0){
-                throw new Error("No Doctor with such id")
-            }
-            let customer_ids=result[0].customer_ids
-            callback(customer_ids)
 
-
-        })
-    }
 
     static addCustomerToDoctor(patientId,doctorId,callback){
 
-        this.getCurrentPatients(doctorId,customerIds=>{
-            let updateCustomerIds=customerIds+","+patientId
+        Database.getCurrentPatientsIds(doctorId,customerIds=>{
+            let updateCustomerIds=""
+            if(customerIds==null||customerIds==""){
+                updateCustomerIds=patientId
+            }else{
+                updateCustomerIds=customerIds+","+patientId
+
+            }
             let query=`UPDATE ${env.database.STAFF_TABLE} SET customer_ids = ? WHERE id = ?`
             conn.query(query,[updateCustomerIds,doctorId],(err,result)=>{
                 if(err){
                     throw err
                 }
                 callback(result)
+            })
+        })
+
+    }
+
+
+    static deleteStaff(id){
+        this.getSingleStaff(id,staff=>{
+            let updatedCustomers=0
+            staff.customers.forEach(customer=>{
+                Customer.removeDoctor(customer.id,()=>{
+                    updatedCustomers++
+                    if(updatedCustomers==staff.customers.length){
+                        Login.deleteUser(staff.login_id,()=>{
+                            let query=`DELETE FROM ${env.database.STAFF_TABLE} WHERE id = ?`
+                            conn.query(query,[id],(err,result)=>{
+                                if(err){
+                                    throw err
+                                }
+                                callback(result)
+                            })
+                        })
+                    }
+                })
             })
         })
 

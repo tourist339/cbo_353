@@ -38,7 +38,7 @@ const fillCustomersTable=(data)=>{
                 ${doctorTd}
 
                 <td>
-                <button class="classic-btn">Delete</button></td>
+                <button class="classic-btn delete-customer-btn" customerid="${customer.id}">Delete</button></td>
 `
         customersTable.appendChild(singleRow)
         if(!customer.doctor) {
@@ -97,7 +97,11 @@ const fillCustomersTable=(data)=>{
                     body:JSON.stringify(dataToSubmit)
                 }).then((response)=>response.json())
                     .then(data=>{
-                        console.log(data)
+                        if(data.result){
+                            window.location.reload(true)
+                        }else{
+                            alert(data.data)
+                        }
                     })
                     .catch(err=>console.error(err))
 
@@ -133,7 +137,7 @@ const fillCustomersTable=(data)=>{
                     <td>${doctor.firstname}</td>
                      <td>${doctor.lastname}</td>
                     <td>${doctor.addiction_type}</td>
-                    <td>${doctor.customers}</td>
+                    <td>${doctor.customers.length}</td>
                     </tr>
                     </table>`
 
@@ -146,6 +150,32 @@ const fillCustomersTable=(data)=>{
                     }
                  )
                 .catch(err=>console.error(err))
+        })
+    }
+
+
+    let customerDeleteButtons=document.getElementsByClassName("delete-customer-btn")
+    for (let i = 0; i < customerDeleteButtons.length; i++) {
+        customerDeleteButtons[i].addEventListener("click",e=>{
+            console.log("Fdsfs")
+            const customerId=e.target.getAttribute("customerid")
+            fetch("/admin/deleteCustomer",{ method:"POST",
+                headers: {
+                    'Content-Type': 'application/json' ,//this must be set to a json type
+                },
+                body:JSON.stringify({customerId:customerId})
+            }).then((response)=>response.json())
+                .then(data=>{
+                    console.log(data)
+                    // if(data.result){
+                    //     window.location.reload(true)
+                    // }else{
+                    //     alert(data.data)
+                    // }
+                })
+                .catch(err=>console.error(err))
+
+
         })
     }
 
