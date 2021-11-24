@@ -9,6 +9,8 @@ const fillCustomersTable=(data)=>{
             <th>Username</th>
             <th>First Name</th>
             <th>Last Name</th>
+                        <th>Phone Number</th>
+
             <th>Addiction Kind</th>
              <th>Doctor</th>
 
@@ -21,7 +23,7 @@ const fillCustomersTable=(data)=>{
         let singleRow=document.createElement("tr")
         let doctorTd=``
         if(customer.doctor){
-            doctorTd=`<td><div class="row-flex-center"> <p>${customer.doctor.firstname+" "+customer.doctor.last_name}</p><a class="classic-btn para-text" target="_blank" href="/admin/staff?id=${customer.doctor.id}">View</a></div> </td>`
+            doctorTd=`<td><div class="row-flex-center"> <p>${customer.doctor.firstname+" "+customer.doctor.lastname}</p><a class="classic-btn para-text" target="_blank" href="/admin/staff?id=${customer.doctor.id}">View</a></div> </td>`
 
         }else{
 
@@ -34,6 +36,8 @@ const fillCustomersTable=(data)=>{
                 <td>${customer.firstname}</td>
 
                 <td>${customer.lastname}</td>
+                                <td>${customer.phone_num}</td>
+
                 <td>${customer.addiction_type}</td>
                 ${doctorTd}
 

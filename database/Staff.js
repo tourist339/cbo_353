@@ -132,7 +132,7 @@ class Staff{
         let query=`SELECT * FROM ${env.database.STAFF_TABLE} WHERE login_id = ?`
         conn.query(query,[login_id],(err,result)=>{
             if(err||result.length==0){
-                callback(false,"No staff exists in database with id "+staff_id)
+                callback(false,"No staff exists in database with id "+login_id)
                 return
             }
             let singlestaff=result[0]

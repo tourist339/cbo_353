@@ -46,7 +46,7 @@ class Login{
         let query=`SELECT id FROM ${env.database.LOGIN_TABLE} WHERE username = ?`
         conn.query(query,[username],(err,result)=>{
             if(err||result.length==0){
-                callback(false,"No such Login Id")
+                callback(false,"No such username found in database")
                 return
             }
 

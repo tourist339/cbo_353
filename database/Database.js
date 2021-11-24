@@ -53,15 +53,20 @@ class Database{
     }
 
     static removePatientFromDoctor(patientId,doctorId,callback){
+        console.log("here")
         this.getCurrentPatientsIds(doctorId,customerIds=>{
+            console.log(customerIds)
             if(customerIds==null||customerIds==""){
                 callback()
             }else{
                 let customerIdsArray=customerIds.split(",")
                 const index = customerIdsArray.indexOf(patientId);
+                console.log(customerIdsArray,index,patientId)
+
                 if (index > -1) {
                     customerIdsArray.splice(index, 1);
                 }
+                console.log(customerIdsArray)
                 let updatedCustomerIds=customerIdsArray.length==0?"":customerIdsArray.join(",")
                 let query=`UPDATE ${env.database.STAFF_TABLE} SET customer_ids = ? WHERE id = ?`
                 conn.query(query,[updatedCustomerIds,doctorId],(err,result)=>{

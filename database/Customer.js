@@ -61,7 +61,7 @@ class Customer{
      }
 
      static removeDoctor(patientId,callback){
-         let query=`UPDATE ${env.database.CUSTOMER_TABLE} SET staff_id = "" WHERE id = ?`
+         let query=`UPDATE ${env.database.CUSTOMER_TABLE} SET staff_id = NULL WHERE id = ?`
          conn.query(query,[patientId],(err,result)=>{
              if(err){
                  throw err
@@ -87,6 +87,18 @@ class Customer{
 
     }
 
+    static getSingleCustomerFromLoginId(login_id,callback){
+        let query=`SELECT * FROM ${env.database.CUSTOMER_TABLE} WHERE login_id = ?`
+        conn.query(query,[login_id],(err,result)=>{
+            if(err||result.length==0){
+                callback(false,"No customer exists in database with id "+staff_id)
+                return
+            }
+            callback(true,result[0])
+
+
+        })
+    }
 
 
 }

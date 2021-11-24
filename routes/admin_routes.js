@@ -77,7 +77,6 @@ router.get("/getSingleStaffFromUsername",(req,res)=>{
 
             Staff.getSingleStaffFromLoginId(id,(result,staff)=>{
                 res.send({result:result,data:staff})
-
             })
         })
     }else{
@@ -86,6 +85,40 @@ router.get("/getSingleStaffFromUsername",(req,res)=>{
 
 
 
+})
+
+router.get("/getSingleCustomerFromUsername",(req,res)=>{
+    const username=req.query.username
+    Login.getIdFromUsername(username,(result,loginId)=> {
+        console.log()
+            if (result) {
+                Customer.getSingleCustomerFromLoginId(loginId, (result,customer) => {
+                    if(!result)
+                        res.send({result: false, data: customer})
+
+                    Database.getAddictionNameFromId(customer.addiction_type, (addiction_name) => {
+
+                        customer.addiction_type = addiction_name
+
+                        Staff.getSingleStaff(customer.staff_id, (result,staff) => {
+                            if(!result){
+                                customer.staff = []
+
+                            }else {
+                                customer.staff = staff
+                            }
+                            res.send({result: true, data: customer})
+                        })
+                    })
+                })
+            }
+        else
+        {
+            res.send({result: false, data: loginId})
+
+        }
+    }
+    )
 })
 
 router.get("/getAllCustomers",(req,res)=>{
@@ -201,6 +234,18 @@ router.post("/deleteCustomer",(req,res)=>{
     const customerId=req.body.customerId
     Customer.deleteCustomer(customerId,()=>{
         res.send({result:true,data:"Customer Deleted"})
+
+    })
+})
+
+router.post("/removePatientFromDoctor",(req,res)=>{
+    const patientId=req.body.patientId
+    const doctorId=req.body.doctorId
+
+    Database.removePatientFromDoctor(patientId,doctorId,()=>{
+        Customer.removeDoctor(patientId,()=>{
+            res.send({result:true,data:"Removed Patient"})
+        })
 
     })
 })
